@@ -10,19 +10,21 @@ void EXT_Int2_isr(void);
 void Decremnet(unsigned char setting);
 void VaildateDecre(void);
 void increment(unsigned char setting);
+void incrementSet(unsigned char setting);
+
 void delay_ms(unsigned int n);
 void reloadIT(void);
     
 
-unsigned short seconds = 50;
-unsigned short minutes = 59;
-unsigned short hours = 23;
+unsigned short seconds = 0;
+unsigned short minutes = 0;
+unsigned short hours = 0;
 unsigned short cnt2=-1;
 unsigned flag=1;
 short lineFourFlag=0;
 short mode = -1;
 
-unsigned char seconds_minutes_hours = "s";
+unsigned char seconds_minutes_hours = 's';
 unsigned char* key = "";
 int commandStart=0;
 int readMode=0;

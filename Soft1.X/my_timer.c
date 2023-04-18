@@ -16,7 +16,7 @@ void reloadTimer(void) {
 void checkTimeValidation(void) {
     if (seconds >= 60) {
         minutes++;
-        seconds = 50;
+        seconds = 0;
     }
     if (minutes >= 60) {
         hours++;
@@ -29,33 +29,71 @@ void checkTimeValidation(void) {
 
 }
 
-void increment(unsigned char setting) {
+void incrementSet(unsigned char setting) {
     char tmp2Buffer[30];
-    
- 
+    INTCONbits.TMR0IE = 0;
+
+
+
     switch (setting) {
         case 's':
         {
             seconds++;
-            checkTimeValidation();
+            if (seconds > 59) {
+                seconds = 0;
+            };
             break;
         }
         case 'm':
         {
             minutes++;
-            checkTimeValidation();
+            if (minutes > 59) {
+                minutes = 0;
+            };
             break;
         }
         case 'h':
         {
             // hours = 4;
             hours++;
-            checkTimeValidation();
+            if (hours > 23) {
+                hours = 0;
+            };
             break;
         }
 
     }
-   
+
+
+}
+
+void increment(unsigned char setting) {
+    char tmp2Buffer[30];
+    if (INTCONbits.TMR0IE == 1) {
+        switch (setting) {
+            case 's':
+            {
+                seconds++;
+                checkTimeValidation();
+                break;
+            }
+            case 'm':
+            {
+                minutes++;
+                checkTimeValidation();
+                break;
+            }
+            case 'h':
+            {
+                // hours = 4;
+                hours++;
+                checkTimeValidation();
+                break;
+            }
+
+        }
+    }
+
 
 }
 
@@ -66,10 +104,10 @@ void Decremnet(unsigned char setting) {
     switch (setting) {
         case 's':
         {
-            if(seconds>=1){
+            if (seconds >= 1) {
                 seconds--;
             }
-            
+
             lcd_gotoxy(1, 1);
             sprintf(tmpBuffer, "%2d:%2d:%2d", hours, minutes, seconds);
             lcd_puts(tmpBuffer);
@@ -77,7 +115,7 @@ void Decremnet(unsigned char setting) {
         }
         case 'm':
         {
-            if(minutes>=1){
+            if (minutes >= 1) {
                 minutes--;
             }
             lcd_gotoxy(1, 1);
@@ -87,7 +125,7 @@ void Decremnet(unsigned char setting) {
         }
         case 'h':
         {
-             if(hours>=1){
+            if (hours >= 1) {
                 minutes--;
             }
             lcd_gotoxy(1, 1);
@@ -273,9 +311,8 @@ void EXT_Int2_isr(void) {
 
 }
 
-
 void EXT_Int0_isr(void) {
-    lineFourFlag=!lineFourFlag;
+    lineFourFlag = !lineFourFlag;
     INTCONbits.INT0F = 0;
 
 }
@@ -287,7 +324,7 @@ void __interrupt(high_priority) highIsr(void)
     if (PIR1bits.RCIF) RX_isr();
     if (INTCON3bits.INT1F) EXT_Int1_isr();
     if (INTCON3bits.INT2F) EXT_Int2_isr();
-    if(INTCONbits.INT0F) EXT_Int0_isr();
+    if (INTCONbits.INT0F) EXT_Int0_isr();
 
     //    else if(PIR1bits.TXIF &&  PIE1bits.TXIE ) TX_isr();
 

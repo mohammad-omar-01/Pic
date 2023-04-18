@@ -131,6 +131,10 @@ void main(void) {
             INTCON3bits.INT2IE = 0;
             lcd_gotoxy(1, 3);
             lcd_puts("Normal");
+            lcd_gotoxy(10, 3);
+            lcd_puts(" ");
+
+
             lcd_gotoxy(1, 1);
             sprintf(Buffer, "%2d:%2d:%2d", hours, minutes, seconds);
             lcd_puts(Buffer);
@@ -146,20 +150,23 @@ void main(void) {
 
         }
         if (!PORTBbits.RB3 && mode == 1) {
+            INTCONbits.TMR0IE = 0;
+
 
             delay_ms(100);
             if (!PORTBbits.RB3) // re-check the keypress
             {
-                increment(seconds_minutes_hours);
-                if(seconds>59)seconds=0;
-                if(minutes>59)minutes=0;
-                if(hours>23)hours=0;
+
+                incrementSet(seconds_minutes_hours);
+
                 lcd_gotoxy(1, 1);
                 sprintf(Buffer, "%2d:%2d:%2d", hours, minutes, seconds);
                 lcd_puts(Buffer);
             }
         }
-        if (!PORTBbits.RB4 && mode == 1) { // S1 is the pressed key
+        if (!PORTBbits.RB4 && mode == 1) {
+                        INTCONbits.TMR0IE = 0;
+// S1 is the pressed key
             delay_ms(100); // 100ms delay for avoiding spike detection
             if (!PORTBbits.RB4) // re-check the keypress
             {
@@ -169,16 +176,19 @@ void main(void) {
                 lcd_puts(Buffer);
             }
         }
-        lcd_gotoxy(1, 4);
-        if(lineFourFlag==1){
-        sprintf(Buffer, " V1=%4.2f V2=%4.2f", AN[0], AN[1]); // read raw value for POT1 
-        lcd_puts(Buffer);
+        if (lineFourFlag == 1) {
+            lcd_gotoxy(0, 4);
+            sprintf(Buffer, "V1=%4.2f V2=%4.2f", AN[0], AN[1]);
+            // read raw value for POT1 
+            lcd_gotoxy(1, 4);
+            lcd_puts(Buffer);
+        } else if (lineFourFlag == 0) {
+            lcd_gotoxy(0, 4);
+            sprintf(Buffer, "Mohammad Osama  "); // read raw value for POT1 
+            lcd_gotoxy(1, 4);
+            lcd_puts(Buffer);
         }
-        else if(lineFourFlag==0){
-        sprintf(Buffer, "Mohammad Osama"); // read raw value for POT1 
-        lcd_puts(Buffer);
-        }
-        
+
         delay_ms(100);
         char command[32];
         if (readTime == 1) {
