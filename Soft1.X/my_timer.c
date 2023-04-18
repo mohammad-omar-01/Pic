@@ -126,7 +126,7 @@ void Decremnet(unsigned char setting) {
         case 'h':
         {
             if (hours >= 1) {
-                minutes--;
+                hours--;
             }
             lcd_gotoxy(1, 1);
             sprintf(tmpBuffer, "%2d:%2d:%2d", hours, minutes, seconds);
